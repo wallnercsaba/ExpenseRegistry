@@ -1,4 +1,4 @@
-package com.peterbartha.expenseregistry;
+package com.ferenczcsabawallner.expenseregistry;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
