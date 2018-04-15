@@ -1,7 +1,9 @@
-package com.ferenczcsabawallner.expenseregistry;
+package com.ferenczcsabawallner.expenseregistry.ui.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.ferenczcsabawallner.expenseregistry.R;
 
 /**
  * Created by Csabi on 2018. 04. 12..

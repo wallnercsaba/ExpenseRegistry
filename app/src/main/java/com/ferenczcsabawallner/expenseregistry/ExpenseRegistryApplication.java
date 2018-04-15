@@ -8,12 +8,12 @@ import android.app.Application;
 
 public class ExpenseRegistryApplication extends Application {
 
-    public static MainAppComponent injector;
+    public static ExpenseRegistryApplicationComponent injector;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        injector = DaggerMainAppComponent.builder().build();
+        injector = DaggerExpenseRegistryApplicationComponent.builder().build();
     }
 }
