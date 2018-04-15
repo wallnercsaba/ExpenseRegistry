@@ -1,5 +1,6 @@
 package com.ferenczcsabawallner.expenseregistry;
 
+import com.ferenczcsabawallner.expenseregistry.ui.UIModule;
 import com.ferenczcsabawallner.expenseregistry.ui.main.MainActivity;
 
 import javax.inject.Singleton;
@@ -11,7 +12,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {})
+@Component(modules = {UIModule.class})
 public interface ExpenseRegistryApplicationComponent {
     void inject(MainActivity mainActivity);
 }
