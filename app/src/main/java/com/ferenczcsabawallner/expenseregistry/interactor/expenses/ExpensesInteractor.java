@@ -73,6 +73,7 @@ public class ExpensesInteractor {
                 throw new Exception("Result code is not 200");
             }
             event.setCode(response.code());
+            event.setExpense(expense);
             EventBus.getDefault().post(event);
         } catch (Exception e) {
             event.setThrowable(e);
@@ -88,9 +89,11 @@ public class ExpensesInteractor {
                 throw new Exception("Result code is not 200");
             }
             event.setCode(response.code());
+            event.setId(expenseId);
             EventBus.getDefault().post(event);
         } catch (Exception e) {
             event.setThrowable(e);
             EventBus.getDefault().post(event);
-        }}
+        }
+    }
 }
