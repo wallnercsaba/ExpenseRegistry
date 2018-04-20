@@ -1,5 +1,7 @@
 package com.ferenczcsabawallner.expenseregistry;
 
+import com.ferenczcsabawallner.expenseregistry.repository.Repository;
+import com.ferenczcsabawallner.expenseregistry.repository.RepositoryModule;
 import com.ferenczcsabawallner.expenseregistry.ui.UIModule;
 import com.ferenczcsabawallner.expenseregistry.ui.main.MainActivity;
 
@@ -12,7 +14,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {UIModule.class})
+@Component(modules = {UIModule.class, RepositoryModule.class})
 public interface ExpenseRegistryApplicationComponent {
     void inject(MainActivity mainActivity);
 }
