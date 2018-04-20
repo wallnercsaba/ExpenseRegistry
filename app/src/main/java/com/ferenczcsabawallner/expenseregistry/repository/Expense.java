@@ -12,13 +12,16 @@ public class Expense extends SugarRecord<Expense> {
     String place;
     String date;
     String timestamp;
+    Long amount;
 
     public Expense(){}
     public Expense(Long id,
                    String place,
                    String date,
-                   String timestamp){
+                   String timestamp,
+                   Long amount){
         this.setId(id);
+        this.amount = amount;
         this.place = place;
         this.date = date;
         this.timestamp = timestamp;
@@ -26,10 +29,12 @@ public class Expense extends SugarRecord<Expense> {
 
     public Expense(String place,
                    String date,
-                   String timestamp){
+                   String timestamp,
+                   Long amount){
         this.place = place;
         this.date = date;
         this.timestamp = timestamp;
+        this.amount = amount;
     }
 
 }

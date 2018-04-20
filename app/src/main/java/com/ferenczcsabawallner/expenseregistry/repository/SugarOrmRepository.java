@@ -26,8 +26,9 @@ public class SugarOrmRepository implements Repository {
     @Override
     public void saveExpense(String place,
                             String date,
-                            String timestamp) {
-        Expense e = new Expense(place, date, timestamp);
+                            String timestamp,
+                            Long amount) {
+        Expense e = new Expense(place, date, timestamp, amount);
         e.save();
     }
 
@@ -35,11 +36,13 @@ public class SugarOrmRepository implements Repository {
     public void updateExpense(Long id,
                               String place,
                               String date,
-                              String timestamp) {
+                              String timestamp,
+                              Long amount) {
         Expense e = Expense.findById(Expense.class, id);
         e.place=place;
         e.date=date;
         e.timestamp=timestamp;
+        e.amount=amount;
         e.save();
     }
 

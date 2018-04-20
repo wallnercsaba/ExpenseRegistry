@@ -1,6 +1,6 @@
 package com.ferenczcsabawallner.expenseregistry;
 
-import com.ferenczcsabawallner.expenseregistry.repository.Repository;
+import com.ferenczcsabawallner.expenseregistry.interactor.expense.ExpenseRepositoryInteractor;
 import com.ferenczcsabawallner.expenseregistry.repository.RepositoryModule;
 import com.ferenczcsabawallner.expenseregistry.ui.UIModule;
 import com.ferenczcsabawallner.expenseregistry.ui.main.MainActivity;
@@ -17,4 +17,5 @@ import dagger.Component;
 @Component(modules = {UIModule.class, RepositoryModule.class})
 public interface ExpenseRegistryApplicationComponent {
     void inject(MainActivity mainActivity);
+    void inject(ExpenseRepositoryInteractor expenseReposítoryInteractor);
 }

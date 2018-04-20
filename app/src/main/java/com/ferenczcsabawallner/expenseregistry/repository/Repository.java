@@ -16,12 +16,14 @@ public interface Repository {
 
     void saveExpense(String place,
                      String date,
-                     String timestamp);
+                     String timestamp,
+                     Long amount);
 
     void updateExpense(Long id,
                        String place,
                        String date,
-                       String timestamp);
+                       String timestamp,
+                       Long amount);
 
     void removeExpense(Long id);
 }
