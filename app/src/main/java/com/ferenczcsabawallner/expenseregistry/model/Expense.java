@@ -16,6 +16,9 @@ public class Expense   {
   @SerializedName("place")
   private String place = null;
   
+  @SerializedName("amount")
+  private Long amount = null;
+  
   @SerializedName("date")
   private Date date = null;
   
@@ -44,6 +47,16 @@ public class Expense   {
   }
   public void setPlace(String place) {
     this.place = place;
+  }
+
+  
+  /**
+   **/
+  public Long getAmount() {
+    return amount;
+  }
+  public void setAmount(Long amount) {
+    this.amount = amount;
   }
 
   
@@ -89,6 +102,7 @@ public class Expense   {
     Expense expense = (Expense) o;
     return Objects.equals(id, expense.id) &&
         Objects.equals(place, expense.place) &&
+        Objects.equals(amount, expense.amount) &&
         Objects.equals(date, expense.date) &&
         Objects.equals(timestamp, expense.timestamp) &&
         Objects.equals(deleted, expense.deleted);
@@ -96,7 +110,7 @@ public class Expense   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, place, date, timestamp, deleted);
+    return Objects.hash(id, place, amount, date, timestamp, deleted);
   }
 
   @Override
@@ -106,6 +120,7 @@ public class Expense   {
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    place: ").append(toIndentedString(place)).append("\n");
+    sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("    deleted: ").append(toIndentedString(deleted)).append("\n");

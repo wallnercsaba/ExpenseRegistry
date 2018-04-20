@@ -10,7 +10,6 @@ import com.ferenczcsabawallner.expenseregistry.network.expense.ExpenseApi;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
