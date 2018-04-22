@@ -16,8 +16,8 @@ public interface ExpenseApi {
   /**
    * Add a new expense to the database
    * 
-   * @param body Expense object that needs to be added to the database
-   * @return Call<Expense>
+   * @param body ExpenseRecord object that needs to be added to the database
+   * @return Call<ExpenseRecord>
    */
   
   @POST("expense")
@@ -28,9 +28,9 @@ public interface ExpenseApi {
   
   /**
    * Find expense by ID
-   * Returns a single Expense
+   * Returns a single ExpenseRecord
    * @param expenseId ID of pet to return
-   * @return Call<Expense>
+   * @return Call<ExpenseRecord>
    */
   
   @GET("expense/id/{expenseId}")
@@ -56,7 +56,7 @@ public interface ExpenseApi {
   /**
    * Deletes an expense
    * 
-   * @param expenseId Expense id to delete
+   * @param expenseId ExpenseRecord id to delete
    * @return Call<Void>
    */
   
@@ -70,7 +70,7 @@ public interface ExpenseApi {
    * Get expenses by date
    * 
    * @param timestamp Date
-   * @return Call<List<Expense>>
+   * @return Call<List<ExpenseRecord>>
    */
   
   @GET("expense/{timestamp}")

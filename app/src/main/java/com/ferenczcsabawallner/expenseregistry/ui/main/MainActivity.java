@@ -1,6 +1,8 @@
 package com.ferenczcsabawallner.expenseregistry.ui.main;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,8 +11,12 @@ import android.widget.ListView;
 
 import com.ferenczcsabawallner.expenseregistry.ExpenseRegistryApplication;
 import com.ferenczcsabawallner.expenseregistry.R;
+import com.ferenczcsabawallner.expenseregistry.repository.ExpenseRecord;
+import com.ferenczcsabawallner.expenseregistry.ui.editDialog.ExpenseEditDialog;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -18,14 +24,13 @@ import javax.inject.Inject;
  * Created by Csabi on 2018. 04. 12..
  */
 
-public class MainActivity extends AppCompatActivity implements MainScreen {
+public class MainActivity extends AppCompatActivity implements MainScreen, AdapterView.OnItemClickListener, CalendarView.OnDateChangeListener {
 
     @Inject
     MainPresenter mainPresenter;
 
     ListView expenseListView;
-
-    //TODO Expense selectedExpense; or implement the dialog interface for the event handling
+    CalendarView calendarView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,27 +39,25 @@ public class MainActivity extends AppCompatActivity implements MainScreen {
 
         ExpenseRegistryApplication.injector.inject(this);
 
-        CalendarView calendarView= findViewById(R.id.calendar);
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                                            int dayOfMonth) {
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, month);
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                mainPresenter.SelectDay(cal.getTime());
-            }
-        });
+        calendarView= findViewById(R.id.calendar);
+        calendarView.setOnDateChangeListener(this);
 
         expenseListView = findViewById(R.id.expensees_listview);
 
-        expenseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        expenseListView.setOnItemClickListener(this);
+
+        FloatingActionButton floatButtonAdd = findViewById(R.id.addexpense_button);
+        floatButtonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO Set selectedExpense
-                //TODO popup editExpense and handle the actions
+            public void onClick(View view) {
+                mainPresenter.ShowDialog(null);
+            }
+        });
+        FloatingActionButton floatButtonSync = findViewById(R.id.syncwithserver_button);
+        floatButtonSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainPresenter.SyncWithServer();
             }
         });
     }
@@ -72,8 +75,30 @@ public class MainActivity extends AppCompatActivity implements MainScreen {
     }
 
     @Override
-    public void ShowExpenses() {
-        ExpenseArrayAdapter adapter = new ExpenseArrayAdapter(this/*, new List<Expense>()*/);
+    public void ShowExpenses(List<ExpenseRecord> expens) {
+        ExpenseArrayAdapter adapter = new ExpenseArrayAdapter(this, expens);
         expenseListView.setAdapter(adapter);
+    }
+
+    @Override
+    public void ShowDialog(Date selectedDate, ExpenseRecord expenseRecord) {
+        ExpenseEditDialog dialog = new ExpenseEditDialog(this,selectedDate,expenseRecord);
+        dialog.show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        ExpenseArrayAdapter adapter = (ExpenseArrayAdapter)adapterView.getAdapter();
+        mainPresenter.ShowDialog((ExpenseRecord)adapter.getItem(i));
+    }
+
+    @Override
+    public void onSelectedDayChange(@NonNull CalendarView view, int year, int month,
+                                    int dayOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        mainPresenter.SelectDay(cal.getTime());
     }
 }

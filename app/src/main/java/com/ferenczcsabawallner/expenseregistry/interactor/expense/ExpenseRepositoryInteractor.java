@@ -4,7 +4,8 @@ import com.ferenczcsabawallner.expenseregistry.ExpenseRegistryApplication;
 import com.ferenczcsabawallner.expenseregistry.interactor.expense.event.ExpenseRepositoryUpdatedEvent;
 import com.ferenczcsabawallner.expenseregistry.interactor.expense.event.GetExpenseFromRepositoryById;
 import com.ferenczcsabawallner.expenseregistry.interactor.expense.event.GetExpensesFromRepositoryByDateEvent;
-import com.ferenczcsabawallner.expenseregistry.repository.Expense;
+import com.ferenczcsabawallner.expenseregistry.model.Expense;
+import com.ferenczcsabawallner.expenseregistry.repository.ExpenseRecord;
 import com.ferenczcsabawallner.expenseregistry.repository.Repository;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,41 +27,56 @@ public class ExpenseRepositoryInteractor {
         ExpenseRegistryApplication.injector.inject(this);
     }
 
-    void getExpensesByDate(Date date){
-        List<Expense> expenses = expenseRepository.getExpensesByDate(date);
-        GetExpensesFromRepositoryByDateEvent event = new GetExpensesFromRepositoryByDateEvent(expenses);
+    public void getExpensesByDate(Date date){
+        List<ExpenseRecord> expens = expenseRepository.getExpensesByDate(date);
+        GetExpensesFromRepositoryByDateEvent event = new GetExpensesFromRepositoryByDateEvent(expens);
         EventBus.getDefault().post(event);
     }
 
-    void getExpenseById(Long id){
-        Expense e = expenseRepository.getExpenseById(id);
+    public void getExpenseById(Long id){
+        ExpenseRecord e = expenseRepository.getExpenseById(id);
         GetExpenseFromRepositoryById event = new GetExpenseFromRepositoryById(e);
         EventBus.getDefault().post(event);
     }
 
-    void saveExpense(String place,
-                     String date,
-                     String timestamp,
-                     Long amount){
+    public void saveExpense(String place,
+                            Date date,
+                            Date timestamp,
+                            Long amount){
         expenseRepository.saveExpense(place, date, timestamp, amount);
         ExpenseRepositoryUpdatedEvent event = new ExpenseRepositoryUpdatedEvent();
         EventBus.getDefault().post(event);
     }
 
-    void updateExpense(Long id,
-                       String place,
-                       String date,
-                       String timestamp,
-                       Long amount){
+    public void updateExpense(Long id,
+                              String place,
+                              Date date,
+                              Date timestamp,
+                              Long amount){
         expenseRepository.updateExpense(id, place, date, timestamp, amount);
         ExpenseRepositoryUpdatedEvent event = new ExpenseRepositoryUpdatedEvent();
         EventBus.getDefault().post(event);
     }
 
-    void removeExpense(Long id){
+    public void removeExpense(Long id){
         expenseRepository.removeExpense(id);
         ExpenseRepositoryUpdatedEvent event = new ExpenseRepositoryUpdatedEvent();
         EventBus.getDefault().post(event);
     }
 
+    public Date getLastTimestamp(){
+        return expenseRepository.getLastTimestamp();
+    }
+
+    public void processExpenses(List<Expense> expenses){
+        for (Expense e : expenses) {
+            if (expenseRepository.isInDB(e.getId())){
+                expenseRepository.updateExpense(e.getId(), e.getPlace(), e.getDate(), e.getTimestamp(), e.getAmount());
+            }else{
+                expenseRepository.saveExpense(e.getPlace(), e.getDate(),e.getTimestamp() , e.getAmount());
+            }
+            ExpenseRepositoryUpdatedEvent event = new ExpenseRepositoryUpdatedEvent();
+            EventBus.getDefault().post(event);
+        }
+    }
 }

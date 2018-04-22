@@ -1,6 +1,6 @@
 package com.ferenczcsabawallner.expenseregistry.interactor.expense.event;
 
-import com.ferenczcsabawallner.expenseregistry.repository.Expense;
+import com.ferenczcsabawallner.expenseregistry.repository.ExpenseRecord;
 
 import java.util.List;
 
@@ -9,19 +9,19 @@ import java.util.List;
  */
 
 public class GetExpensesFromRepositoryByDateEvent {
-    private List<Expense> expenses;
+    private List<ExpenseRecord> expens;
     private Throwable throwable;
 
     public GetExpensesFromRepositoryByDateEvent(){
 
     }
 
-    public GetExpensesFromRepositoryByDateEvent(List<Expense> expenses){
-        this.expenses=expenses;
+    public GetExpensesFromRepositoryByDateEvent(List<ExpenseRecord> expens){
+        this.expens = expens;
     }
 
-    public List<Expense> GetExpenses(){return expenses;}
-    public void SetExpenses(List<Expense> expenses){this.expenses=expenses;}
+    public List<ExpenseRecord> GetExpenses(){return expens;}
+    public void SetExpenses(List<ExpenseRecord> expens){this.expens = expens;}
 
     public Throwable getThrowable() {
         return throwable;

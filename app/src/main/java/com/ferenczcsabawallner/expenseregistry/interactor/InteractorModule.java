@@ -1,6 +1,7 @@
 package com.ferenczcsabawallner.expenseregistry.interactor;
 
 import com.ferenczcsabawallner.expenseregistry.interactor.expense.ExpenseRepositoryInteractor;
+import com.ferenczcsabawallner.expenseregistry.interactor.expenses.ExpensesInteractor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -11,5 +12,7 @@ import dagger.Provides;
 @Module
 public class InteractorModule {
     @Provides
-    public ExpenseRepositoryInteractor provideExpensesInteractor(){return  new ExpenseRepositoryInteractor();}
+    public ExpenseRepositoryInteractor provideExpenseRepositoryInteractor(){return  new ExpenseRepositoryInteractor();}
+    @Provides
+    public ExpensesInteractor provideExpensesInteractor(){return new ExpensesInteractor();}
 }

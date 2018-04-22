@@ -6,9 +6,14 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
+import com.ferenczcsabawallner.expenseregistry.ExpenseRegistryApplication;
 import com.ferenczcsabawallner.expenseregistry.R;
+import com.ferenczcsabawallner.expenseregistry.interactor.expenses.ExpensesInteractor;
+import com.ferenczcsabawallner.expenseregistry.model.Expense;
+import com.ferenczcsabawallner.expenseregistry.repository.ExpenseRecord;
+
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -18,41 +23,58 @@ import javax.inject.Inject;
 
 public class ExpenseEditDialog extends Dialog {
 
-    //Expense expense;
+    @Inject
+    ExpensesInteractor expensesInteractor;
+
     EditText placeEditText;
     EditText amountEditText;
 
-    public ExpenseEditDialog(@NonNull Context context/*, Expense expense*/) {
+    public ExpenseEditDialog(@NonNull Context context, final Date date, final ExpenseRecord expenseRecord) {
         super(context);
         this.setContentView(R.layout.dialog_expenseedit);
+
+        ExpenseRegistryApplication.injector.inject(this);
 
         placeEditText = findViewById(R.id.place_edittext);
         amountEditText = findViewById(R.id.amount_edittext);
 
-        //Set text if not new
+        if (expenseRecord !=null){
+            placeEditText.setText(expenseRecord.place);
+            amountEditText.setText(expenseRecord.amount.toString());
+        }
 
         Button saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Expense
-                placeEditText.getText().toString();
-                Integer.getInteger(amountEditText.getText().toString());
+                //ExpenseRecord
 
-                //save
-
+                Expense expense = new Expense();
+                expense.setPlace(placeEditText.getText().toString());
+                expense.setAmount(Long.getLong(amountEditText.getText().toString()));
+                expense.setDate(date);
+                if (expenseRecord ==null) {
+                    expensesInteractor.addExpense(expense);
+                }else{
+                    expense.setId(expenseRecord.getId());
+                    expensesInteractor.modifyExpense(expenseRecord.getId(), expense);
+                }
                 cancel();
             }
         });
         Button deleteButton = findViewById(R.id.delete_button);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //delete
+        if (expenseRecord==null){
+            deleteButton.setActivated(false);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    expensesInteractor.deleteExpense(expenseRecord.getId());
 
-                cancel();
-            }
-        });
+                    cancel();
+                }
+            });
+        }
+
         Button cancelButton = findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override

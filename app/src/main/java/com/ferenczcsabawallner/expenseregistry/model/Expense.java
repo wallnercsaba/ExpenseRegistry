@@ -116,7 +116,7 @@ public class Expense   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Expense {\n");
+    sb.append("class ExpenseRecord {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    place: ").append(toIndentedString(place)).append("\n");

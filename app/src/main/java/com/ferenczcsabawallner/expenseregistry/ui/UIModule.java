@@ -17,6 +17,8 @@ public class UIModule {
     @Provides
     @Singleton
     public MainPresenter provideMainPresenter(){return new MainPresenter();}
+
+
     private Context context;
 
     public UIModule(Context context) {

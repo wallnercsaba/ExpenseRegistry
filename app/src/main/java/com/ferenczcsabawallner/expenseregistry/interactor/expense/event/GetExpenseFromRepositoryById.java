@@ -1,27 +1,25 @@
 package com.ferenczcsabawallner.expenseregistry.interactor.expense.event;
 
-import com.ferenczcsabawallner.expenseregistry.repository.Expense;
-
-import java.util.List;
+import com.ferenczcsabawallner.expenseregistry.repository.ExpenseRecord;
 
 /**
  * Created by Csabi on 2018. 04. 20..
  */
 
 public class GetExpenseFromRepositoryById {
-    private Expense expense;
+    private ExpenseRecord expenseRecord;
     private Throwable throwable;
 
     public GetExpenseFromRepositoryById(){
 
     }
 
-    public GetExpenseFromRepositoryById(Expense expense){
-        this.expense=expense;
+    public GetExpenseFromRepositoryById(ExpenseRecord expenseRecord){
+        this.expenseRecord = expenseRecord;
     }
 
-    public Expense GetExpense(){return expense;}
-    public void SetExpense(Expense expense){this.expense=expense;}
+    public ExpenseRecord GetExpense(){return expenseRecord;}
+    public void SetExpense(ExpenseRecord expenseRecord){this.expenseRecord = expenseRecord;}
 
     public Throwable getThrowable() {
         return throwable;

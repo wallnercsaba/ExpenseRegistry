@@ -1,8 +1,11 @@
 package com.ferenczcsabawallner.expenseregistry.repository;
 
-import android.content.Context;
+import android.widget.CalendarView;
+
+import com.ferenczcsabawallner.expenseregistry.util.DateHelper;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -14,41 +17,53 @@ public class SugarOrmRepository implements Repository {
 
     SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     @Override
-    public List<Expense> getExpensesByDate(Date date) {
-        return Expense.find(Expense.class, "date = ?", fmt.format(date));
+    public List<ExpenseRecord> getExpensesByDate(Date date) {
+        return ExpenseRecord.find(ExpenseRecord.class, "date = ?", fmt.format(date));
     }
 
     @Override
-    public Expense getExpenseById(Long id) {
-        return Expense.findById(Expense.class,id);
+    public ExpenseRecord getExpenseById(Long id) {
+        return ExpenseRecord.findById(ExpenseRecord.class,id);
     }
 
     @Override
     public void saveExpense(String place,
-                            String date,
-                            String timestamp,
+                            Date date,
+                            Date timestamp,
                             Long amount) {
-        Expense e = new Expense(place, date, timestamp, amount);
+
+        ExpenseRecord e = new ExpenseRecord(place, DateHelper.JustDate(date).getTime(), timestamp.getTime(), amount);
         e.save();
     }
 
     @Override
     public void updateExpense(Long id,
                               String place,
-                              String date,
-                              String timestamp,
+                              Date date,
+                              Date timestamp,
                               Long amount) {
-        Expense e = Expense.findById(Expense.class, id);
+        ExpenseRecord e = ExpenseRecord.findById(ExpenseRecord.class, id);
         e.place=place;
-        e.date=date;
-        e.timestamp=timestamp;
+        e.date=DateHelper.JustDate(date).getTime();
+        e.timestamp=timestamp.getTime();
         e.amount=amount;
         e.save();
     }
 
     @Override
     public void removeExpense(Long id) {
-        Expense e = Expense.findById(Expense.class, id);
+        ExpenseRecord e = ExpenseRecord.findById(ExpenseRecord.class, id);
         e.delete();
+    }
+
+    @Override
+    public Date getLastTimestamp() {
+        ExpenseRecord e =  ExpenseRecord.find(ExpenseRecord.class, null, null, null, "timestamp DESC", "1").get(0);
+        return new Date(e.timestamp);
+    }
+
+    @Override
+    public boolean isInDB(Long id) {
+        return ExpenseRecord.findById(ExpenseRecord.class, id)!=null;
     }
 }

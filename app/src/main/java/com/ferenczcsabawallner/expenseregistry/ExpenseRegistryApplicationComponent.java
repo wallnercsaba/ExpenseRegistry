@@ -6,7 +6,9 @@ import com.ferenczcsabawallner.expenseregistry.interactor.expense.ExpenseReposit
 import com.ferenczcsabawallner.expenseregistry.repository.RepositoryModule;
 import com.ferenczcsabawallner.expenseregistry.network.NetworkModule;
 import com.ferenczcsabawallner.expenseregistry.ui.UIModule;
+import com.ferenczcsabawallner.expenseregistry.ui.editDialog.ExpenseEditDialog;
 import com.ferenczcsabawallner.expenseregistry.ui.main.MainActivity;
+import com.ferenczcsabawallner.expenseregistry.ui.main.MainPresenter;
 
 import javax.inject.Singleton;
 
@@ -22,4 +24,6 @@ public interface ExpenseRegistryApplicationComponent {
     void inject(MainActivity mainActivity);
     void inject(ExpenseRepositoryInteractor expenseReposítoryInteractor);
     void inject(ExpensesInteractor expensesInteractor);
+    void inject(ExpenseEditDialog expenseEditDialog);
+    void inject(MainPresenter mainPresenter);
 }
