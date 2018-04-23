@@ -7,7 +7,7 @@ import com.ferenczcsabawallner.expenseregistry.repository.RepositoryModule;
 import com.ferenczcsabawallner.expenseregistry.network.NetworkModule;
 import com.ferenczcsabawallner.expenseregistry.ui.UIModule;
 import com.ferenczcsabawallner.expenseregistry.ui.editDialog.ExpenseEditDialog;
-import com.ferenczcsabawallner.expenseregistry.ui.main.MainActivity;
+import com.ferenczcsabawallner.expenseregistry.ui.main.MainFragment;
 import com.ferenczcsabawallner.expenseregistry.ui.main.MainPresenter;
 
 import javax.inject.Singleton;
@@ -21,7 +21,7 @@ import dagger.Component;
 @Singleton
 @Component(modules = {UIModule.class, InteractorModule.class, NetworkModule.class, RepositoryModule.class})
 public interface ExpenseRegistryApplicationComponent {
-    void inject(MainActivity mainActivity);
+    void inject(MainFragment mainFragment);
     void inject(ExpenseRepositoryInteractor expenseReposítoryInteractor);
     void inject(ExpensesInteractor expensesInteractor);
     void inject(ExpenseEditDialog expenseEditDialog);

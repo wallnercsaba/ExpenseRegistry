@@ -1,14 +1,21 @@
 package com.ferenczcsabawallner.expenseregistry.ui.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CalendarView;
+
 import android.widget.ListView;
 
+import com.applandeo.materialcalendarview.CalendarView;
+import com.applandeo.materialcalendarview.EventDay;
+import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.ferenczcsabawallner.expenseregistry.ExpenseRegistryApplication;
 import com.ferenczcsabawallner.expenseregistry.R;
 import com.ferenczcsabawallner.expenseregistry.repository.ExpenseRecord;
@@ -24,18 +31,21 @@ import javax.inject.Inject;
  * Created by Csabi on 2018. 04. 12..
  */
 
-public class MainActivity extends AppCompatActivity implements MainScreen, AdapterView.OnItemClickListener, CalendarView.OnDateChangeListener {
+public class MainFragment extends Fragment implements MainScreen, AdapterView.OnItemClickListener, OnDayClickListener {
 
     @Inject
     MainPresenter mainPresenter;
 
+    @Inject
+    Context context;
+
     ListView expenseListView;
     CalendarView calendarView;
 
-    @Override
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.fragment_main);
 
         ExpenseRegistryApplication.injector.inject(this);
 
@@ -60,9 +70,42 @@ public class MainActivity extends AppCompatActivity implements MainScreen, Adapt
                 mainPresenter.SyncWithServer();
             }
         });
+    }*/
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_main, container, false);
+
+        ExpenseRegistryApplication.injector.inject(this);
+
+        calendarView= v.findViewById(R.id.calendar);
+        //calendarView.setOnDateChangeListener(this);
+        calendarView.setOnDayClickListener(this);
+
+        expenseListView = v.findViewById(R.id.expensees_listview);
+
+        expenseListView.setOnItemClickListener(this);
+
+        FloatingActionButton floatButtonAdd = v.findViewById(R.id.addexpense_button);
+        floatButtonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainPresenter.ShowDialog(null);
+            }
+        });
+        FloatingActionButton floatButtonSync = v.findViewById(R.id.syncwithserver_button);
+        floatButtonSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainPresenter.SyncWithServer();
+            }
+        });
+
+        return v;
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
         mainPresenter.attachScreen(this);
@@ -72,17 +115,29 @@ public class MainActivity extends AppCompatActivity implements MainScreen, Adapt
     protected void onStop() {
         super.onStop();
         mainPresenter.detachScreen();
+    }*/
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mainPresenter.attachScreen(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mainPresenter.detachScreen();
     }
 
     @Override
     public void ShowExpenses(List<ExpenseRecord> expens) {
-        ExpenseArrayAdapter adapter = new ExpenseArrayAdapter(this, expens);
+        ExpenseArrayAdapter adapter = new ExpenseArrayAdapter(context, expens);
         expenseListView.setAdapter(adapter);
     }
 
     @Override
     public void ShowDialog(Date selectedDate, ExpenseRecord expenseRecord) {
-        ExpenseEditDialog dialog = new ExpenseEditDialog(this,selectedDate,expenseRecord);
+        ExpenseEditDialog dialog = new ExpenseEditDialog(context,selectedDate,expenseRecord);
         dialog.show();
     }
 
@@ -92,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements MainScreen, Adapt
         mainPresenter.ShowDialog((ExpenseRecord)adapter.getItem(i));
     }
 
-    @Override
+   /** @Override
     public void onSelectedDayChange(@NonNull CalendarView view, int year, int month,
                                     int dayOfMonth) {
         Calendar cal = Calendar.getInstance();
@@ -100,5 +155,14 @@ public class MainActivity extends AppCompatActivity implements MainScreen, Adapt
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         mainPresenter.SelectDay(cal.getTime());
+    }*/
+
+    @Override
+    public void onDayClick(EventDay eventDay) {
+        /*Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, eventDay.getCalendar().get());
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);*/
+        mainPresenter.SelectDay(eventDay.getCalendar().getTime());
     }
 }
