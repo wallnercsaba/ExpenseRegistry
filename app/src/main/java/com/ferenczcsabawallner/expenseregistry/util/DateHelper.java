@@ -15,7 +15,7 @@ public class DateHelper {
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-
+        c.set(Calendar.AM_PM, Calendar.AM);
         return c.getTime();
     }
 }

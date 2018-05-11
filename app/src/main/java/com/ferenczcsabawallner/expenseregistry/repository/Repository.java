@@ -1,5 +1,7 @@
 package com.ferenczcsabawallner.expenseregistry.repository;
 
+import android.content.Context;
+
 import java.util.Date;
 import java.util.List;
 
@@ -8,11 +10,17 @@ import java.util.List;
  */
 
 public interface Repository {
+
+    void open(Context context);
+
+    void close();
+
     List<ExpenseRecord> getExpensesByDate(Date date);
 
     ExpenseRecord getExpenseById(Long id);
 
-    void saveExpense(String place,
+    void saveExpense(Long id,
+                     String place,
                      Date date,
                      Date timestamp,
                      Long amount);

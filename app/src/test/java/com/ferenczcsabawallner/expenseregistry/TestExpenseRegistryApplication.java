@@ -4,22 +4,18 @@ import android.app.Application;
 
 import com.ferenczcsabawallner.expenseregistry.repository.Repository;
 import com.ferenczcsabawallner.expenseregistry.ui.UIModule;
-import com.orm.SugarApp;
-import com.orm.SugarContext;
 
 import javax.inject.Inject;
 
 /**
- * Created by Csabi on 2018. 04. 12..
+ * Created by Csabi on 2018. 05. 09..
  */
 
-public class ExpenseRegistryApplication extends Application {
-
-    public static ExpenseRegistryApplicationComponent injector;
+public class TestExpenseRegistryApplication extends ExpenseRegistryApplication {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        injector = DaggerExpenseRegistryApplicationComponent.builder().uIModule(new UIModule(this)).build();
+        injector = DaggerTestComponent.builder().testModule(new TestModule(this)).build();
     }
 }

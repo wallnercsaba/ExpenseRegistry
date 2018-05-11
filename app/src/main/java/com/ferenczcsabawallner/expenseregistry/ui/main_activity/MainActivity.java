@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.ferenczcsabawallner.expenseregistry.R;
+import com.ferenczcsabawallner.expenseregistry.ui.about.AboutFragment;
 import com.ferenczcsabawallner.expenseregistry.ui.main.MainFragment;
 
 /**
@@ -37,51 +38,60 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        /*// set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
+                menuItem -> {
+                    /*// set item as selected to persist highlight
+                    menuItem.setChecked(true);
+                    // close drawer when item is tapped
+                    mDrawerLayout.closeDrawers();
 
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
+                    // Add code here to update the UI based on the item selected
+                    // For example, swap UI fragments here
 */
-                        Fragment fragment = null;
-                        Class fragmentClass;
-                        switch(menuItem.getItemId()) {
-                            case R.id.nav_main:
-                                fragmentClass = MainFragment.class;
-                                break;
-                            default:
-                                fragmentClass = MainFragment.class;
-                        }
-
-                        try {
-                            fragment = (Fragment) fragmentClass.newInstance();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        // Insert the fragment by replacing any existing fragment
-
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-                        // Highlight the selected item has been done by NavigationView
-
-                        menuItem.setChecked(true);
-
-                        // Set action bar title
-
-                        setTitle(menuItem.getTitle());
-
-                        // Close the navigation drawer
-
-                        mDrawerLayout.closeDrawers();
-                        return true;
+                    Fragment fragment = null;
+                    Class fragmentClass;
+                    switch(menuItem.getItemId()) {
+                        case R.id.nav_main:
+                            fragmentClass = MainFragment.class;
+                            break;
+                        case R.id.nav_about:
+                            fragmentClass = AboutFragment.class;
+                            break;
+                        default:
+                            fragmentClass = MainFragment.class;
                     }
+
+                    try {
+                        fragment = (Fragment) fragmentClass.newInstance();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // Insert the fragment by replacing any existing fragment
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                    // Highlight the selected item has been done by NavigationView
+
+                    menuItem.setChecked(true);
+
+                    // Set action bar title
+
+                    setTitle(menuItem.getTitle());
+
+                    // Close the navigation drawer
+
+                    mDrawerLayout.closeDrawers();
+                    return true;
                 });
+        Fragment fragment = null;
+        try {
+            fragment = (Fragment) MainFragment.class.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        setTitle(navigationView.getMenu().getItem(0).getTitle());
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

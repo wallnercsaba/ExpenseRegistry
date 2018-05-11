@@ -2,7 +2,6 @@ package com.ferenczcsabawallner.expenseregistry.ui.main;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-
 import android.widget.ListView;
 
 import com.applandeo.materialcalendarview.CalendarView;
@@ -21,7 +19,6 @@ import com.ferenczcsabawallner.expenseregistry.R;
 import com.ferenczcsabawallner.expenseregistry.repository.ExpenseRecord;
 import com.ferenczcsabawallner.expenseregistry.ui.editDialog.ExpenseEditDialog;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -88,19 +85,9 @@ public class MainFragment extends Fragment implements MainScreen, AdapterView.On
         expenseListView.setOnItemClickListener(this);
 
         FloatingActionButton floatButtonAdd = v.findViewById(R.id.addexpense_button);
-        floatButtonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainPresenter.ShowDialog(null);
-            }
-        });
+        floatButtonAdd.setOnClickListener(view -> mainPresenter.ShowDialog(null));
         FloatingActionButton floatButtonSync = v.findViewById(R.id.syncwithserver_button);
-        floatButtonSync.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainPresenter.SyncWithServer();
-            }
-        });
+        floatButtonSync.setOnClickListener(view -> mainPresenter.SyncWithServer());
 
         return v;
     }
@@ -137,7 +124,7 @@ public class MainFragment extends Fragment implements MainScreen, AdapterView.On
 
     @Override
     public void ShowDialog(Date selectedDate, ExpenseRecord expenseRecord) {
-        ExpenseEditDialog dialog = new ExpenseEditDialog(context,selectedDate,expenseRecord);
+        ExpenseEditDialog dialog = new ExpenseEditDialog(getActivity(),selectedDate,expenseRecord);
         dialog.show();
     }
 
@@ -165,4 +152,5 @@ public class MainFragment extends Fragment implements MainScreen, AdapterView.On
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);*/
         mainPresenter.SelectDay(eventDay.getCalendar().getTime());
     }
+
 }

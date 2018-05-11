@@ -3,6 +3,7 @@ package com.ferenczcsabawallner.expenseregistry.ui.main;
 import android.content.Context;
 
 import com.ferenczcsabawallner.expenseregistry.ExpenseRegistryApplication;
+import com.ferenczcsabawallner.expenseregistry.di.Network;
 import com.ferenczcsabawallner.expenseregistry.interactor.expense.ExpenseRepositoryInteractor;
 import com.ferenczcsabawallner.expenseregistry.interactor.expense.event.ExpenseRepositoryUpdatedEvent;
 import com.ferenczcsabawallner.expenseregistry.interactor.expense.event.GetExpensesFromRepositoryByDateEvent;
@@ -15,10 +16,12 @@ import com.ferenczcsabawallner.expenseregistry.model.Expense;
 import com.ferenczcsabawallner.expenseregistry.repository.ExpenseRecord;
 import com.ferenczcsabawallner.expenseregistry.ui.Presenter;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Date;
+import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
@@ -27,6 +30,9 @@ import javax.inject.Inject;
  */
 
 public class MainPresenter extends Presenter<MainScreen> {
+    @Inject
+    @Network
+    Executor networkExecutor;
 
     @Inject
     ExpenseRepositoryInteractor expenseRepositoryInteractor;
@@ -39,21 +45,35 @@ public class MainPresenter extends Presenter<MainScreen> {
 
     Date selectedDate;
 
-    public MainPresenter(){
+//    public MainPresenter(){
+//        ExpenseRegistryApplication.injector.inject(this);
+//    }
+
+    @Override
+    public void attachScreen(MainScreen screen) {
+        super.attachScreen(screen);
         ExpenseRegistryApplication.injector.inject(this);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void detachScreen() {
+        EventBus.getDefault().unregister(this);
+        super.detachScreen();
     }
 
     public void SelectDay(Date date){
         selectedDate = date;
-        expenseRepositoryInteractor.getExpensesByDate(date);
+        networkExecutor.execute(() -> expenseRepositoryInteractor.getExpensesByDate(date));
     }
 
     public void ShowDialog(ExpenseRecord expenseRecord){
-        screen.ShowDialog(selectedDate, expenseRecord);
+        if (selectedDate!=null)
+            screen.ShowDialog(selectedDate, expenseRecord);
     }
 
     public void SyncWithServer(){
-        expensesInteractor.getExpenses(expenseRepositoryInteractor.getLastTimestamp());
+        networkExecutor.execute(() -> expensesInteractor.getExpenses(expenseRepositoryInteractor.getLastTimestamp()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -64,13 +84,14 @@ public class MainPresenter extends Presenter<MainScreen> {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAddExpenseEvent(AddExpenseEvent event){
         Expense e = event.getExpense();
-        expenseRepositoryInteractor.saveExpense(e.getPlace(), e.getDate(), e.getTimestamp(), e.getAmount());
+        expenseRepositoryInteractor.saveExpense(e.getId(), e.getPlace(), e.getDate(), e.getTimestamp(), e.getAmount());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeleteExpenseEvent(DeleteExpenseEvent event){
-        Long id = event.getId();
-        expenseRepositoryInteractor.removeExpense(id);
+//        Long id = event.getId();
+//        expenseRepositoryInteractor.removeExpense(id);
+        SyncWithServer();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -80,12 +101,14 @@ public class MainPresenter extends Presenter<MainScreen> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onModifyExpenseEvent(ModifyExpenseEvent event){
-        Expense e = event.getExpense();
-        expenseRepositoryInteractor.updateExpense(e.getId(),e.getPlace(),e.getDate(),e.getTimestamp(),e.getAmount());
+//        Expense e = event.getExpense();
+//        expenseRepositoryInteractor.updateExpense(e.getId(),e.getPlace(),e.getDate(),e.getTimestamp(),e.getAmount());
+        SyncWithServer();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExpenseRepositoryUpdatedEvent(ExpenseRepositoryUpdatedEvent event){
-        SelectDay(selectedDate);
+        if (selectedDate!=null)
+            SelectDay(selectedDate);
     }
 }

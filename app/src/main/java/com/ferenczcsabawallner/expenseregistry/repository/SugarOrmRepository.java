@@ -1,13 +1,19 @@
 package com.ferenczcsabawallner.expenseregistry.repository;
 
+import android.content.Context;
 import android.widget.CalendarView;
 
 import com.ferenczcsabawallner.expenseregistry.util.DateHelper;
+import com.orm.SugarContext;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import static com.orm.SugarRecord.find;
 
 /**
  * Created by Csabi on 2018. 04. 20..
@@ -15,10 +21,19 @@ import java.util.List;
 
 public class SugarOrmRepository implements Repository {
 
-    SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+    @Override
+    public void open(Context context) {
+        SugarContext.init(context);
+    }
+
+    @Override
+    public void close() {
+        SugarContext.terminate();
+    }
+
     @Override
     public List<ExpenseRecord> getExpensesByDate(Date date) {
-        return ExpenseRecord.find(ExpenseRecord.class, "date = ?", fmt.format(date));
+        return find(ExpenseRecord.class, "date = ?", Long.toString(date.getTime()));
     }
 
     @Override
@@ -27,12 +42,13 @@ public class SugarOrmRepository implements Repository {
     }
 
     @Override
-    public void saveExpense(String place,
+    public void saveExpense(Long id,
+                            String place,
                             Date date,
                             Date timestamp,
                             Long amount) {
 
-        ExpenseRecord e = new ExpenseRecord(place, DateHelper.JustDate(date).getTime(), timestamp.getTime(), amount);
+        ExpenseRecord e = new ExpenseRecord(id,place, DateHelper.JustDate(date).getTime(), timestamp.getTime(), amount);
         e.save();
     }
 
@@ -58,7 +74,11 @@ public class SugarOrmRepository implements Repository {
 
     @Override
     public Date getLastTimestamp() {
-        ExpenseRecord e =  ExpenseRecord.find(ExpenseRecord.class, null, null, null, "timestamp DESC", "1").get(0);
+        List<ExpenseRecord> list = ExpenseRecord.find(ExpenseRecord.class, null, null, null, "timestamp DESC", "1");
+        if (list.size()==0){
+            return new Date(0);
+        }
+        ExpenseRecord e = list.get(0);
         return new Date(e.timestamp);
     }
 

@@ -28,7 +28,7 @@ public class MockNetworkModule {
 
     @Provides
     @Singleton
-    public ExpenseApi provideArtistsApi(Retrofit retrofit) {
+    public ExpenseApi provideExpenseApi(Retrofit retrofit) {
         return new MockExpenseApi();
     }
 

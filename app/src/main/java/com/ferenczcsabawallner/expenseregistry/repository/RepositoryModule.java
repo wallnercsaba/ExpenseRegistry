@@ -17,4 +17,6 @@ public class RepositoryModule {
     public Repository provideRepository() {
         return new SugarOrmRepository();
     }
+
+
 }
